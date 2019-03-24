@@ -1,25 +1,23 @@
 import numpy as np
 import random
 import copy
-from collections import namedtuple, deque
-
-from scripts.model import Actor, Critic
-
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
+from collections import namedtuple, deque
+from scripts.model import Actor, Critic
+
 BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 128       # minibatch size
+BATCH_SIZE = 512       # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
 LR_ACTOR = 1e-4        # learning rate of the actor 
 LR_CRITIC = 1e-4        # learning rate of the critic
 WEIGHT_DECAY = 0        # L2 weight decay
-ITERATION_LEARNING = 5  # number of times to iterate the training process
-FREQUENCY_LEARNING = 10 # After how many steps it is required a training process
-NOISE_OU_THETA = 0.10   # Noise mean
-NOISE_OU_SIGMA = 0.1	# Noise Sigma
+ITERATION_LEARNING = 6  # number of times to iterate the training process
+FREQUENCY_LEARNING = 20 # After how many steps it is required a training process
+NOISE_OU = 0.25         # Noise mean
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -136,7 +134,7 @@ class Agent():
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, seed, mu=0., theta=NOISE_OU_THETA, sigma=NOISE_OU_SIGMA):
+    def __init__(self, size, seed, mu=0., theta=NOISE_OU, sigma=0.2):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta

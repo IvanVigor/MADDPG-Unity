@@ -9,12 +9,10 @@ def hidden_init(layer):
     lim = 1. / np.sqrt(fan_in)
     return (-lim, lim)
 
-
-
 class Actor(nn.Module):
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, seed, fc1_units=512, fc2_units=256):
+    def __init__(self, state_size, action_size, seed, fc1_units=256, fc2_units=128):
         """Initialize parameters and build model.
         Params
         ======
@@ -40,13 +38,13 @@ class Actor(nn.Module):
         """Build an actor (policy) network that maps states -> actions."""
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
-        return F.tanh(self.fc3(x))
+        return torch.tanh(self.fc3(x))
 
 
 class Critic(nn.Module):
     """Critic (Value) Model."""
 
-    def __init__(self, state_size, action_size, seed, fcs1_units=512, fc2_units=256):
+    def __init__(self, state_size, action_size, seed, fcs1_units=256, fc2_units=128):
         """Initialize parameters and build model.
         Params
         ======
@@ -59,7 +57,7 @@ class Critic(nn.Module):
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
         self.fcs1 = nn.Linear(state_size, fcs1_units)
-        self.fc2 = nn.Linear(fcs1_units)), fc2_units)
+        self.fc2 = nn.Linear(fcs1_units+(action_size), fc2_units)
         self.fc3 = nn.Linear(fc2_units, 1)
         self.reset_parameters()
 
@@ -74,31 +72,3 @@ class Critic(nn.Module):
         x = torch.cat((xs, action), dim=1)
         x = F.relu(self.fc2(x))
         return self.fc3(x)
-
-
-class Multi_Agent_DDPG()
-	"""
-	Initialize the Agents and Critics.
-	Params:
-	======
-	       state_size (int): Dimension of each state
-	       action_size (int): Dimension of each action
-
-
-
-	"""
-
-    def __init__(self, state_size, action_size, seed, agents_size)::
-       super(Multi_Agent_DDPG, self).__init__()
-
-       # Actor Network (w/ Target Network)
-       self.actor_local = Actor(state_size, action_size, random_seed).to(device)
-       self.actor_target = Actor(state_size, action_size, random_seed).to(device)
-
-       state_size_critic = (state_size+action_size)*agents_size
-
-       # Critic Network (w/ Target Network)
-       self.critic_local = Critic(state_size_critic, action_size, random_seed).to(device)
-       self.critic_target = Critic(state_size_critic, action_size, random_seed).to(device)
-
-
