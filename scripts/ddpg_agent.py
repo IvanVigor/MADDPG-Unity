@@ -8,24 +8,24 @@ import torch.optim as optim
 from collections import namedtuple, deque
 from scripts.model import Actor, Critic
 
-BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 256       # minibatch size
-GAMMA = 0.99            # discount factor
-TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 5e-4        # learning rate of the actor 
-LR_CRITIC = 5e-4        # learning rate of the critic
-WEIGHT_DECAY = 0        # L2 weight decay
-ITERATION_LEARNING = 2  # number of times to iterate the training process
+BUFFER_SIZE = int(1e6)   # replay buffer size
+BATCH_SIZE = 256         # minibatch size
+GAMMA = 0.99             # discount factor
+TAU = 1e-3               # for soft update of target parameters
+LR_ACTOR = 2e-4          # learning rate of the actor 
+LR_CRITIC = 3e-4         # learning rate of the critic
+WEIGHT_DECAY = 0         # L2 weight decay
+ITERATION_LEARNING = 3   # number of times to iterate the training process
 FREQUENCY_LEARNING = 1   # After how many steps it is required a training process
-NOISE_THETA = 0.15         # Noise mean
-NOISE_SIGMA = 0.2
+NOISE_THETA = 0.15       # OUNoise mean
+NOISE_SIGMA = 0.2        # Sigma value of OUNoise
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Agent():
     """Interacts with and learns from the environment."""
     
-    def __init__(self, state_size, action_size, agents_number, random_seed):
+    def __init__(self, state_size, action_size, agent_number, random_seed):
         """Initialize an Agent object.
         
         Params
@@ -36,8 +36,9 @@ class Agent():
         """
         self.state_size = state_size
         self.action_size = action_size
-        self.agents_number = agents_number
+        self.agent_number = agent_number
         self.seed = random.seed(random_seed)
+        self.agent_numbers = 1
 
         # Actor Network (w/ Target Network)
         self.actor_local = Actor(state_size, action_size, random_seed).to(device)
@@ -50,7 +51,7 @@ class Agent():
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
 
         # Noise process
-        self.noise = OUNoise((agents_number,action_size), random_seed)
+        self.noise = OUNoise((self.agent_numbers, action_size), random_seed)
 
         # Replay memory
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
@@ -58,9 +59,7 @@ class Agent():
     def step(self, state, action, reward, next_state, done, timestep):
         """Save experience in replay memory, and use random sample from buffer to learn."""
         # Save experience / reward
-        for i in range(self.agents_number):
-            self.memory.add(state[i,:], action[i,:], reward[i], next_state[i,:], done[i])
-
+        self.memory.add(state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
         if (len(self.memory) > BATCH_SIZE) and (timestep % FREQUENCY_LEARNING == 0):
@@ -70,8 +69,9 @@ class Agent():
           
     def act(self, states, add_noise=True):
         """Returns actions for given state as per current policy."""
+       
         states = torch.from_numpy(states).float().to(device)
-        actions = np.zeros((self.agents_number, self.action_size))
+        actions = np.zeros((self.agent_numbers, self.action_size))
         self.actor_local.eval()
         with torch.no_grad():
             for agent_num, state in enumerate(states):
@@ -84,7 +84,14 @@ class Agent():
 
     def reset(self):
         self.noise.reset()
-
+    
+    def selector_agent(self, vector, acts):
+        """Returns right vector considering the agent"""
+        if(self.agent_number == 0):
+            return torch.cat((vector, acts[:,2:]), dim=1)
+        else:
+            return torch.cat((acts[:,:2], vector), dim=1)
+        
     def learn(self, experiences, gamma):
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
@@ -101,6 +108,9 @@ class Agent():
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
         actions_next = self.actor_target(next_states)
+        # Select the right agent 
+        actions_next = self.selector_agent(actions_next, actions)
+            
         Q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
         Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
@@ -114,8 +124,11 @@ class Agent():
         self.critic_optimizer.step()
 
         # ---------------------------- update actor ---------------------------- #
+        
         # Compute actor loss
         actions_pred = self.actor_local(states)
+        actions_pred = self.selector_agent(actions_pred, actions)
+        # Compute actor loss
         actor_loss = -self.critic_local(states, actions_pred).mean()
         # Minimize the loss
         self.actor_optimizer.zero_grad()
