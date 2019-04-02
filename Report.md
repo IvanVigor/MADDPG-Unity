@@ -1,8 +1,6 @@
 # Multy Agent Deep Deterministic Policy Gradient Tennis Unity Env Report
 
-## Architecture
-
-### Multy-Agent
+### Multy-Agent Scenario
 
 ### Deep Determinist Policy Gradient (DDPG)
 
@@ -53,8 +51,18 @@ This is the list of hyperparameters that has been used for the model training pr
 * ```WEIGHT_DECAY = 0        # L2 weight decay```
 * ```ITERATION_LEARNING = 2  # number of times to iterate the training process```
 * ```FREQUENCY_LEARNING = 1  # after how many steps it is required a training process```
-* ```NOISE_OU = 0.25         # noise mean ```
-* ```NOISE_SIGMA = 0.2        # Sigma value of OUNoise ```
+* ```NOISE_OU = 0.15         # Noise mean ```
+* ```NOISE_SIGMA = 0.2       # Sigma value of OUNoise ```
 
 
 ### Results
+
+The graph below illustrates the score achieved by the architecture with the described hyperparameters:
+
+![results](https://raw.githubusercontent.com/IvanVigor/MADDPG-Unity/master/images/results.png)
+
+The model developed is able to reach an average of 0.5 score over 100 consecutive episodes. We can observe also an increasing and positive trend associated to the model.
+
+### Future Developments
+
+It is also interesting to consider an improvement of this model differentiating the two Agents so as to identify which of both performs better (DDPG Vs A2C). Another possible improvements that we can intruduce is using a noise decay term. The greedy approach during the initial stages brings the most important contribution but then in the long term it may be dangerous during the training / evaluation process. 
