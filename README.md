@@ -73,9 +73,12 @@ In addition to PyTorch, in this repository has been used also Numpy. Numpy is al
 
 ## Files inside repository
 
-- **`report.md`**: it is a report file
-- **`model.py`**: topology of the two networks
-- **`Tennis.ipynb`**: 
+- **`report.md`**: Report File
+- **`scripts/model.py`**: topology of PyTorch networks
+- **`scripts/ddpg_agent.py`**: Agent topology
+- **`Tennis.ipynb`**: Contains the Jupyter notebook for running the experiments
+- **`agen_weights_X.pth`**  : Actor weights for the Agent number X (there are 2 agents)
+- **`critic_weights_X.pth`**  : Critic weights for the Agent number X (there are 2 agents)
 
 ## References
 
