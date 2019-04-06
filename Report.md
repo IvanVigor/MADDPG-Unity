@@ -2,6 +2,10 @@
 
 ### Multy-Agent Scenario
 
+The tennis scenario is a continous space environment where two players need to push the ball over the net. The environment goal has been completed adopting two separated Agents. 
+
+The agents have been built using the Deep Deterministic Policy Gradient structure (DDPG details https://arxiv.org/pdf/1509.02971.pdf). The Agents are composed of an Actor and a Critic ANN (built with PyTorch) with the aim of estimating the best action to adopt in every scenario. DDPG is a Policy-based method which allows us to be used in a continous action space. In addition a policy-based agent learns direclty the optimal policy 
+
 ### Deep Determinist Policy Gradient (DDPG)
 
 The environment in which this model has been trained is based on one single double-joined arm. The code can be adapted easily to 20 jointed-arms architecture. The DDPG is a model which iterativelly learns an optimal policy using the Q-Learning algorithm. Q-Learning is reached thanks to the usage of Bellman equation:
@@ -42,8 +46,8 @@ The Critic Model:
 
 This is the list of hyperparameters that has been used for the model training procedure. These values are also the inside the ddpg_agent.py file code global variables. 
 
-*  ```BUFFER_SIZE = int(1e6)  # replay buffer size```
-* ```BATCH_SIZE = 256       # minibatch size```
+*  ```BUFFER_SIZE = int(1e6) # replay buffer size```
+* ```BATCH_SIZE = 256        # minibatch size```
 * ```GAMMA = 0.99            # discount factor```
 * ```TAU = 1e-3              # for soft update of target parameters```
 * ```LR_ACTOR = 2e-4         # learning rate of the actor ```
@@ -51,8 +55,8 @@ This is the list of hyperparameters that has been used for the model training pr
 * ```WEIGHT_DECAY = 0        # L2 weight decay```
 * ```ITERATION_LEARNING = 2  # number of times to iterate the training process```
 * ```FREQUENCY_LEARNING = 1  # after how many steps it is required a training process```
-* ```NOISE_OU = 0.15         # Noise mean ```
-* ```NOISE_SIGMA = 0.2       # Sigma value of OUNoise ```
+* ```NOISE_OU = 0.15         # Ornstein-Uhlenbeck Mean Value```
+* ```NOISE_SIGMA = 0.2       # Ornstein-Uhlenbeck Sigma Value ```
 
 
 ### Results
