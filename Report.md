@@ -4,7 +4,7 @@
 
 The tennis scenario is a continous space environment where two players need to push the ball over the net. The environment goal has been completed adopting two separated Agents. 
 
-The agents have been built using the Deep Deterministic Policy Gradient structure (DDPG details https://arxiv.org/pdf/1509.02971.pdf). The Agents are composed of an Actor and a Critic ANN (built with PyTorch) with the aim of estimating the best action to adopt in every scenario. DDPG is a Policy-based method which allows us to be used in a continous action space. In addition a policy-based agent learns direclty the optimal policy 
+The agents have been built using the Deep Deterministic Policy Gradient structure (DDPG details)[https://arxiv.org/pdf/1509.02971.pdf]. The Agents are composed of an Actor and a Critic ANN (built with PyTorch) with the aim of estimating the best action to adopt in every scenario. DDPG is a Policy-based method which allows us to be used in a continous action space. In addition a policy-based agent learns direclty the optimal policy.
 
 ### Deep Determinist Policy Gradient (DDPG)
 
@@ -12,7 +12,7 @@ The environment in which this model has been trained is based on one single doub
 
 ![Bellman](https://spinningup.openai.com/en/latest/_images/math/339d9f6adec072789c579d36f9d1791e6246b075.svg)
 
-DDPG learns the optimal action-value function and then define the best action to perform. When you have an optimal action-value in a discrete space is particular easy to identify the best action. In a continous space the things change a little bit. In this latter, you may need a differentiable action-space function in any point in order to adopt a gradient approach for the identification of the right action. 
+DDPG learns the optimal action-value function and then define the best action to perform. When you have an optimal action-value in a discrete space is particular easy to identify the best action. In a continous space the things change a little bit. In this latter, you may need a differentiable action-space function in any point in order to adopt a gradient approach for the identification of the right action. The architecture used for the DDPG had been adopted for this scenario from [Udacity Pendolum environment](https://github.com/udacity/deep-reinforcement-learning/tree/master/ddpg-pendulum).
 
 The main goal of DDPG based on a neural network is the minimization of the mean-squared Bellman error (MSBE). This function describe how closely the action-value function is going to satisfy the BellMan Equation
 
