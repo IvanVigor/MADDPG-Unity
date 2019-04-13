@@ -89,4 +89,6 @@ Reacher Challenge - https://github.com/Unity-Technologies/ml-agents/blob/master/
 
 Ivan Vigorito
 
-## License
+##  License
+The code is provided with MIT license 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
